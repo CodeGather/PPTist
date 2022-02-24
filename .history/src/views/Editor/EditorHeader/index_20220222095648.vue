@@ -101,8 +101,6 @@ export default defineComponent({
     const goIssues = () => {
       window.open('https://github.com/pipipi-pikachu/PPTist/issues')
     }
-    
-    console.log(location)
 
     return {
       redo,

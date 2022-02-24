@@ -34,6 +34,7 @@ export default defineComponent({
       snapshotStore.initSnapshotDatabase()
       mainStore.setAvailableFonts()
     })
+    console.log(location)
     return {
       screening,
       isPC: isPC(),

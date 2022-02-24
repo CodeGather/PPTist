@@ -29,12 +29,10 @@ import SlideAnimationPanel from './SlideAnimationPanel.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import SymbolPanel from './SymbolPanel.vue'
 
-// 自定义
-import OrderConType from './OrderConType.vue'
-import OrderType from './OrderType.vue'
-import OrderAttribute from './OrderAttribute.vue'
-import OrderDataType from './OrderDataType.vue'
-// end
+import SymbolPanel from './OrderConType.vue'
+import SymbolPanel from './OrderType.vue'
+import SymbolPanel from './OrderAttribute.vue'
+import SymbolPanel from './OrderDataType.vue'
 
 interface ElementTabs {
   label: string;
@@ -102,10 +100,10 @@ export default defineComponent({
         [ToolbarStates.SLIDE_ANIMATION]: SlideAnimationPanel,
         [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
         [ToolbarStates.SYMBOL]: SymbolPanel,
-        [ToolbarStates.ORDRER_CONTYPE]: OrderConType,
-        [ToolbarStates.ORDRER_TYPE]: OrderType,
-        [ToolbarStates.ORDRER_ATTRIBUTE]: OrderAttribute,
-        [ToolbarStates.ORDRER_DATATYPE]: OrderDataType,
+        [ToolbarStates.ORDRER_CONTYPE]: SlideDesignPanel,
+        [ToolbarStates.ORDRER_TYPE]: SlideAnimationPanel,
+        [ToolbarStates.ORDRER_ATTRIBUTE]: MultiPositionPanel,
+        [ToolbarStates.ORDRER_DATATYPE]: SymbolPanel,
       }
       return panelMap[toolbarState.value] || null
     })

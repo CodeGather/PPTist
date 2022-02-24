@@ -3,10 +3,10 @@
  * @Date: 2022-02-22 09:56:49
  * @Email: raohong07@163.com
  * @LastEditors: 21克的爱情
- * @LastEditTime: 2022-02-24 11:43:27
+ * @LastEditTime: 2022-02-24 11:35:26
  * @Description: 
  */
-export type ToolbarState = 'symbol' | 'elAnimation' | 'elStyle' | 'elPosition' | 'slideDesign' | 'slideAnimation' | 'multiPosition' | 'constructiontype' | 'orderAttribute' | 'ordertype' | 'orderdatatype' 
+export type ToolbarState = 'symbol' | 'elAnimation' | 'elStyle' | 'elPosition' | 'slideDesign' | 'slideAnimation' | 'multiPosition'
 
 export const enum ToolbarStates {
   SYMBOL = 'symbol',

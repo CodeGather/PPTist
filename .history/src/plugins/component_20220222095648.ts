@@ -1,11 +1,3 @@
-/*
- * @Author: 21克的爱情
- * @Date: 2022-02-22 09:56:49
- * @Email: raohong07@163.com
- * @LastEditors: 21克的爱情
- * @LastEditTime: 2022-02-22 11:41:49
- * @Description: 
- */
 import { App } from 'vue'
 
 import FileInput from '@/components/FileInput.vue'

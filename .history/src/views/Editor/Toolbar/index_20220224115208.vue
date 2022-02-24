@@ -29,12 +29,10 @@ import SlideAnimationPanel from './SlideAnimationPanel.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import SymbolPanel from './SymbolPanel.vue'
 
-// 自定义
 import OrderConType from './OrderConType.vue'
 import OrderType from './OrderType.vue'
 import OrderAttribute from './OrderAttribute.vue'
 import OrderDataType from './OrderDataType.vue'
-// end
 
 interface ElementTabs {
   label: string;

@@ -29,13 +29,6 @@ import SlideAnimationPanel from './SlideAnimationPanel.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import SymbolPanel from './SymbolPanel.vue'
 
-// 自定义
-import OrderConType from './OrderConType.vue'
-import OrderType from './OrderType.vue'
-import OrderAttribute from './OrderAttribute.vue'
-import OrderDataType from './OrderDataType.vue'
-// end
-
 interface ElementTabs {
   label: string;
   value: ToolbarState;
@@ -66,10 +59,10 @@ export default defineComponent({
       { label: '设计', value: ToolbarStates.SLIDE_DESIGN },
       { label: '切换', value: ToolbarStates.SLIDE_ANIMATION },
       { label: '动画', value: ToolbarStates.EL_ANIMATION },
-      { label: '服务类型', value: ToolbarStates.ORDRER_CONTYPE },
-      { label: '服务属性', value: ToolbarStates.ORDRER_TYPE },
+      { label: '服务类型', value: ToolbarStates.ORDRER_ATTRIBUTE },
+      { label: '服务属性', value: ToolbarStates.ORDRER_ATTRIBUTE },
       { label: '下单属性', value: ToolbarStates.ORDRER_ATTRIBUTE },
-      { label: '服务库', value: ToolbarStates.ORDRER_DATATYPE }
+      { label: '服务库', value: ToolbarStates.ORDRER_ATTRIBUTE }
     ]
     const multiSelectTabs = [
       { label: '位置', value: ToolbarStates.MULTI_POSITION },
@@ -102,10 +95,6 @@ export default defineComponent({
         [ToolbarStates.SLIDE_ANIMATION]: SlideAnimationPanel,
         [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
         [ToolbarStates.SYMBOL]: SymbolPanel,
-        [ToolbarStates.ORDRER_CONTYPE]: OrderConType,
-        [ToolbarStates.ORDRER_TYPE]: OrderType,
-        [ToolbarStates.ORDRER_ATTRIBUTE]: OrderAttribute,
-        [ToolbarStates.ORDRER_DATATYPE]: OrderDataType,
       }
       return panelMap[toolbarState.value] || null
     })
