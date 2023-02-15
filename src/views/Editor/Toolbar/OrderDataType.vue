@@ -1,73 +1,123 @@
 <template>
-  <div class="multi-position-panel">
-    <ButtonGroup class="row">
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="左对齐">
-        <Button style="flex: 1;" @click="alignElement('left')"><IconAlignLeft /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="水平居中">
-        <Button style="flex: 1;" @click="alignElement('horizontal')"><IconAlignHorizontally /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="右对齐">
-        <Button style="flex: 1;" @click="alignElement('right')"><IconAlignRight /></Button>
-      </Tooltip>
-    </ButtonGroup>
-    <ButtonGroup class="row">
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="上对齐">
-        <Button style="flex: 1;" @click="alignElement('top')"><IconAlignTop /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="垂直居中">
-        <Button style="flex: 1;" @click="alignElement('vertical')"><IconAlignVertically /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="下对齐">
-        <Button style="flex: 1;" @click="alignElement('bottom')"><IconAlignBottom /></Button>
-      </Tooltip>
-    </ButtonGroup>
-    <ButtonGroup class="row" v-if="displayItemCount > 2">
-      <Button style="flex: 1;" @click="uniformHorizontalDisplay()">水平均匀分布</Button>
-      <Button style="flex: 1;" @click="uniformVerticalDisplay()">垂直均匀分布</Button>
-    </ButtonGroup>
-
-    <Divider />
-
-    <ButtonGroup class="row">
-      <Button :disabled="!canCombine" @click="combineElements()" style="flex: 1;"><IconGroup style="margin-right: 3px;" />组合</Button>
-      <Button :disabled="canCombine" @click="uncombineElements()" style="flex: 1;"><IconUngroup style="margin-right: 3px;" />取消组合</Button>
-    </ButtonGroup>
+  <div class="multi-position-panel" v-if="orderPageData">
+    <Input v-model:value="searchText" placeholder="请输入服务库名称关键字" @change="searchData"/>
+    <Button 
+      size="small" 
+      style="margin: 5px 5px 0 0;"
+      @click="creatElement({name: '服务库名'}, 'parent', '服务库名')"
+      >服务库名</Button>
+    <Dropdown 
+      :trigger="['click']" 
+      v-for="(item, index) in orderPageData.orderTypeDataTypeList" 
+      :key="index" >
+      <Button 
+        size="small" 
+        style="margin: 5px 5px 0 0;"
+        >{{item.name}}</Button>
+      <template #overlay>
+        <Menu size="small">
+          <MenuItem @click="creatElement(item, 'text', item.name)"><IconText /> 点位</MenuItem>
+          <SubMenu key="photosText" v-if="item.photosText.length > 0">
+            <template #title><IconPicture /> 图片</template>
+            <MenuItem v-for="(t, i) in item.photosText" :key="'children_' + i" @click="creatElement(item, 'image', t.name)"><IconPicture /> {{t.name}}</MenuItem>
+          </SubMenu>
+          <SubMenu key="videosText" v-if="item.videosText.length > 0">
+            <template #title><IconVideoTwo /> 视频</template>
+            <MenuItem v-for="(t, i) in item.videosText" :key="'children_' + i" @click="creatElement(item, 'video', t.name)"><IconVideoTwo /> {{t.name}}</MenuItem>
+          </SubMenu>
+          <SubMenu key="optionsText" v-if="item.optionsText.length > 0">
+            <template #title><IconText /> 选项</template>
+            <MenuItem v-for="(t, i) in item.optionsText" :key="'children_' + i" @click="creatElement(item, 'select', t.name)"><IconPicture /> {{t.name}}</MenuItem>
+          </SubMenu>
+        </Menu>
+      </template>
+    </Dropdown>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { ElementAlignCommand } from '@/types/edit'
-import useCombineElement from '@/hooks/useCombineElement'
-import useAlignActiveElement from '@/hooks/useAlignActiveElement'
-import useAlignElementToCanvas from '@/hooks/useAlignElementToCanvas'
-import useUniformDisplayElement from '@/hooks/useUniformDisplayElement'
+import { MutationTypes, useStore } from '@/store'
+import { computed, defineComponent, ref } from 'vue'
+import useCreateElement from '@/hooks/useCreateElement'
+import { PrepareOrderInitData, OrderDataList, InitData } from '@/types/pageData'
+import searchOrderType from '@/hooks/useAxiosPageData'
 
 export default defineComponent({
-  name: 'multi-position-panel',
+  name: 'order-data-type',
   setup() {
-    const { canCombine, combineElements, uncombineElements } = useCombineElement()
-    const { alignActiveElement } = useAlignActiveElement()
-    const { alignElementToCanvas } = useAlignElementToCanvas()
-    const { displayItemCount, uniformHorizontalDisplay, uniformVerticalDisplay } = useUniformDisplayElement()
+    const store = useStore()
+    const orderPageData = computed<PrepareOrderInitData>(() => useStore().getters.getPageData)
+    const { createTextElement, createVideoElement, createImageElement } = useCreateElement()
 
-    // 多选元素对齐，需要先判断当前所选中的元素状态：
-    // 如果所选元素为一组组合元素，则将它对齐到画布；
-    // 如果所选元素不是组合元素或不止一组元素（即当前为可组合状态），则将这多个（多组）元素相互对齐。
-    const alignElement = (command: ElementAlignCommand) => {
-      if (canCombine.value) alignActiveElement(command)
-      else alignElementToCanvas(command)
+    const searchText = ref('')
+
+    // 绘制图片范围
+    const drawShape = (keyName: string, position?: any) => {
+      createImageElement(
+        'https://dali-pord.oss-cn-shanghai.aliyuncs.com/static/image.png',
+        keyName,
+        position
+      )
+    }
+
+    // 绘制文字范围
+    const drawText = (lebel: string, keyName?: string, top?: number, left?: number) => {
+      createTextElement({
+        top: top || 0,
+        left: left || 0,
+        width: 250,
+        height: 50,
+      }, lebel, keyName)
+    }
+
+    // 绘制视频
+    const drawVideo = (lebel: string, keyName?: string) => {
+      createVideoElement(
+        'https://dali-pord.oss-cn-shanghai.aliyuncs.com/static/image.png',
+        keyName,
+      )
+    }
+    
+    const creatElement = (item: OrderDataList, type: string, more?: string) => {
+      // 需要处理点位的标识
+      store.commit(MutationTypes.UPDATE_SLIDE, { keyName: `服务库……${item.name}` })
+      switch (type) {
+        case 'image':
+          drawText(`<p style="text-align: center;">${more || item.name}</p>`, more || '')
+          drawShape(more || '')
+          break
+        case 'video':
+          drawText(`<p style="text-align: center;">${more || item.name}</p>`, more || '')
+          drawVideo(more || '')
+          break
+        case 'text':
+          drawText(more || item.name, more || '')
+          break
+        default:
+          drawText('点位名称', 'pointName', 1, 1)
+          drawText(`<p style="text-align: center;">施工指引`, '施工指引', 0, 100)
+          drawShape('施工指引', {left: 100})
+
+          drawText(`<p style="text-align: center;">服务库名</p>`, '服务库名', 0, 280)
+          drawShape('服务库名', {left: 280})
+          // 需要处理点位的标识
+          store.commit(MutationTypes.UPDATE_SLIDE, { keyName: '服务库……统一点位' })
+          break
+      }
+    }
+
+    // 模糊搜索服务库名称
+    const searchData = async () => {
+      const tool = searchOrderType()
+      const data:InitData[] = await tool.searchOrderType(searchText.value)
+      orderPageData.value.orderTypeDataTypeList = data
     }
 
     return {
-      canCombine,
-      displayItemCount,
-      combineElements,
-      uncombineElements,
-      uniformHorizontalDisplay,
-      uniformVerticalDisplay,
-      alignElement,
+      orderPageData,
+      creatElement,
+      searchText,
+      searchData
     }
   },
 })

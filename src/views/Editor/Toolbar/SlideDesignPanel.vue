@@ -219,7 +219,7 @@ export default defineComponent({
     const currentSlide = computed<Slide>(() => store.getters.currentSlide)
 
     const background = computed(() => {
-      if (!currentSlide.value.background) {
+      if (!currentSlide.value || !currentSlide.value.background) {
         return {
           type: 'solid',
           value: '#fff',

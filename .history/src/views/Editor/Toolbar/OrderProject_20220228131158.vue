@@ -1,30 +1,15 @@
 <template>
   <div class="multi-position-panel">
     <ButtonGroup class="row">
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="左对齐">
-        <Button style="flex: 1;" @click="alignElement('left')"><IconAlignLeft /></Button>
+      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="品牌LoGo">
+        <Button style="flex: 1;" @click="alignElement('top')">品牌LoGo</Button>
       </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="水平居中">
-        <Button style="flex: 1;" @click="alignElement('horizontal')"><IconAlignHorizontally /></Button>
+      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="项目名称">
+        <Button style="flex: 1;" @click="alignElement('vertical')">项目名称</Button>
       </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="右对齐">
-        <Button style="flex: 1;" @click="alignElement('right')"><IconAlignRight /></Button>
+      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="店铺名称">
+        <Button style="flex: 1;" @click="alignElement('bottom')">店铺名称</Button>
       </Tooltip>
-    </ButtonGroup>
-    <ButtonGroup class="row">
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="上对齐">
-        <Button style="flex: 1;" @click="alignElement('top')"><IconAlignTop /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="垂直居中">
-        <Button style="flex: 1;" @click="alignElement('vertical')"><IconAlignVertically /></Button>
-      </Tooltip>
-      <Tooltip :mouseLeaveDelay="0" :mouseEnterDelay="0.5" title="下对齐">
-        <Button style="flex: 1;" @click="alignElement('bottom')"><IconAlignBottom /></Button>
-      </Tooltip>
-    </ButtonGroup>
-    <ButtonGroup class="row" v-if="displayItemCount > 2">
-      <Button style="flex: 1;" @click="uniformHorizontalDisplay()">水平均匀分布</Button>
-      <Button style="flex: 1;" @click="uniformVerticalDisplay()">垂直均匀分布</Button>
     </ButtonGroup>
 
     <Divider />
@@ -37,12 +22,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { ElementAlignCommand } from '@/types/edit'
 import useCombineElement from '@/hooks/useCombineElement'
 import useAlignActiveElement from '@/hooks/useAlignActiveElement'
 import useAlignElementToCanvas from '@/hooks/useAlignElementToCanvas'
 import useUniformDisplayElement from '@/hooks/useUniformDisplayElement'
+
+import axios from 'axios'
+import { Policy } from '@/types/policy'
+import { getSearchPathValue } from '@/utils/common'
 
 export default defineComponent({
   name: 'multi-position-panel',
@@ -59,6 +48,24 @@ export default defineComponent({
       if (canCombine.value) alignActiveElement(command)
       else alignElementToCanvas(command)
     }
+
+    const getProjectDetails = () => {
+      return new Promise<Policy>((resolve, reject) => {
+        axios.get(`http://localhost:8090/jokui-dali-fast//pms/pmsproject/detail/${getSearchPathValue('projectId')}`, {
+          headers: {
+            'token': getSearchPathValue('token')
+          }
+        }).then(({ data }) => {
+          resolve(data.data)
+        }).catch(() => {
+          reject()
+        })
+      })
+    }
+
+    onMounted(() => {
+      getProjectDetails()
+    }) 
 
     return {
       canCombine,
