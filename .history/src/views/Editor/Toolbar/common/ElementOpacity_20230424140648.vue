@@ -56,7 +56,7 @@ export default defineComponent({
   align-items: center;
   margin-bottom: 10px;
   .slider {
-    flex: 3;
+    flex: 3
   }
 }
 </style>

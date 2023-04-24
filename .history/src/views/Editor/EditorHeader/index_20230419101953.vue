@@ -131,7 +131,7 @@ export default defineComponent({
       { label: '下单属性', value: ToolbarStates.ORDRER_ATTRIBUTE },
       { label: '服务库', value: ToolbarStates.ORDRER_DATATYPE }
     ]
-    const setToolbarState = (value: ToolbarState) => {
+    const setToolbarState = (value: ToolbarState|any) => {
       store.commit(MutationTypes.SET_TOOLBAR_STATE, value)
     }
 
@@ -157,16 +157,15 @@ export default defineComponent({
       }
 
       const cloneData = JSON.parse(JSON.stringify(slides.value))
-      queryData.value['content'] = cloneData.map((item:any) => {
-        item['elements'] = item['elements'].map((t:any, i:any) => {
+      queryData.value['content'] = cloneData.map((item:any, i:number) => {
+        item['elements'] = item['elements'].map((t:any) => {
           t['content'] = (t['content'] || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-          if (t['text']) {
+          if (t['text'] && t['text']['content']) {
             t['text']['content'] = t['text']['content'].replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
           }
-          console.log(i)
-          t['sort'] = i
           return t
         })
+        item['sort'] = i
         return item
       })
       store.commit(MutationTypes.PAGE_SPINNING, true)

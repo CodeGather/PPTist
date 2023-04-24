@@ -7,7 +7,7 @@
         :max="1"
         :step="0.1"
         :value="opacity"
-        class="slider"
+        style="flex: 3;"
         @change="value => updateOpacity(value)" 
       />
     </div>
@@ -55,8 +55,5 @@ export default defineComponent({
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  .slider {
-    flex: 3;
-  }
 }
 </style>
