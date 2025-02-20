@@ -53,7 +53,7 @@
               stroke-linecap="butt" 
               stroke-miterlimit="8"
               :d="elementInfo.path" 
-              :fill="Object.keys(elementInfo.gradient || {}).length > 0 ? `url(#editabel-gradient-${elementInfo.id})` : elementInfo.fill"
+              :fill="elementInfo.gradient ? `url(#editabel-gradient-${elementInfo.id})` : elementInfo.fill"
               :stroke="outlineColor"
               :stroke-width="outlineWidth" 
               :stroke-dasharray="strokeDashArray" 
