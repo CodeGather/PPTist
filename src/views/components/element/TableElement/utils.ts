@@ -34,6 +34,7 @@ export const getTextStyle = (style?: TableCellStyle): CSSProperties => {
   }
 }
 
-export const formatText = (text: string) => {
-  return typeof text === 'string' && text.replace(/\n/g, '</br>').replace(/ /g, '&nbsp;') || text
+export const formatText = (text: any) => {
+  // 修复text 类型不为string 时的报错问题
+  return `${text || ''}`.replace(/\n/g, '</br>').replace(/ /g, '&nbsp;')
 }
