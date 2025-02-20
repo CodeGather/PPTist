@@ -35,5 +35,5 @@ export const getTextStyle = (style?: TableCellStyle): CSSProperties => {
 }
 
 export const formatText = (text: string) => {
-  return text.replace(/\n/g, '</br>').replace(/ /g, '&nbsp;')
+  return typeof text === 'string' && text.replace(/\n/g, '</br>').replace(/ /g, '&nbsp;') || text
 }
