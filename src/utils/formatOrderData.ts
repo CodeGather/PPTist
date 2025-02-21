@@ -3,7 +3,7 @@
  * @Date: 2019-12-23 12:33:02
  * @Email: raohong07@163.com
  * @LastEditors: 21克的爱情
- * @LastEditTime: 2025-02-20 14:30:04
+ * @LastEditTime: 2025-02-21 10:17:56
  * @Description: 文件工具
  */
 'use strict'
@@ -16,7 +16,7 @@ import arcToBezier from 'svg-arc-to-cubic-bezier'
 import PptxGenJS from 'pptxgenjs'
 import tinycolor from 'tinycolor2'
 import { startsWith, endsWith } from 'lodash'
-// const moment = require('moment')
+import dayjs from 'dayjs'
 
 export default {
   characters: <String>'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
@@ -253,19 +253,18 @@ export default {
         // 替换下单属性字段
         item.orderAttributeValueList.forEach((oav:any) => {
           if (oav.attrCode === 'isTime') {
-            let timeValue = oav.attrValue1
-            // let timeValue = moment().format('YYYY-MM-DD')
-            // if (oav.attrValue1) {
-            //   timeValue = moment(oav.attrValue1).format('YYYY-MM-DD')
-            // }
-            resultData.name = resultData.name.replaceAll(`@${oav.attrName}`, timeValue || '')
+            let timeValue:any = dayjs().format('YYYY-MM-DD')
+            if (oav.attrValue1) {
+              timeValue = dayjs(oav.attrValue1).format('YYYY-MM-DD')
+            }
+            resultData.name = resultData.name.replace(new RegExp(`@${oav.attrName}`, 'g'), timeValue || '')
           } else {
-            resultData.name = resultData.name.replaceAll(`@${oav.attrName}`, oav.attrValue1 || '')
+            resultData.name = resultData.name.replace(new RegExp(`@${oav.attrName}`, 'g'), oav.attrValue1 || '')
           }
 
           // 替换使用的下单属性字段
           if (pptxConfig.indexOf(`@${oav.attrName}`) > -1) {
-            pptxConfig = pptxConfig.replaceAll(`@${oav.attrName}`, oav.attrValue || '')
+            pptxConfig = pptxConfig.replace(new RegExp(`@${oav.attrName}`, 'g'), oav.attrValue || '')
           }
         })
         // 批量替换完毕后对参数还原处理
@@ -839,7 +838,7 @@ export default {
                 let strData = JSON.stringify(m.data)
                 item.orderAttributeValueList.forEach((oav:any) => {
                   strData = strData.replace(new RegExp(`@${oav.attrName}`, 'g'), oav.attrValue1 || '')
-                  resultData.name = resultData.name.replaceAll(`${oav.attrName}`, oav.attrValue1 || '')
+                  resultData.name = resultData.name.replace(new RegExp(`@${oav.attrName}`, 'g'), oav.attrValue1 || '')
                 })
                 m.data = JSON.parse(strData)
               } else if (m.type === 'shape') {
@@ -877,14 +876,15 @@ export default {
   formatName (str:any, item:any, format = 'YYYY-MM-DD') {
     const { name, brandLogo, brandName, shopSn, brandTypeName } = item.shopEntity
     const { requestDate, submissionData } = item
-    str = str.replaceAll(this.logoUrl, brandLogo || '')
-    str = str.replaceAll('@项目名称', item.projectName || '')
-    str = str.replaceAll('@品牌名称', brandName || '')
-    str = str.replaceAll('@店铺编号', shopSn || '')
-    str = str.replaceAll('@店铺类型', brandTypeName || '')
-    str = str.replaceAll('@选择店铺', name || '')
-    // str = str.replaceAll('@完工时间', moment(submissionData || new Date()).format(format))
-    // str = str.replaceAll('@计划完工', moment(requestDate || new Date()).format(format))
+    str = str.replace(new RegExp(`${this.logoUrl}`, 'g'), brandLogo || '')
+    str = str.replace(new RegExp('@项目名称', 'g'), item.projectName || '')
+    str = str.replace(new RegExp('@品牌名称', 'g'), brandName || '')
+    str = str.replace(new RegExp('@店铺编号', 'g'), shopSn || '')
+    str = str.replace(new RegExp('@店铺类型', 'g'), brandTypeName || '')
+    str = str.replace(new RegExp('@选择店铺', 'g'), name || '')
+    str = str.replace(new RegExp('@完工时间', 'g'), dayjs(submissionData || new Date()).format(format))
+    str = str.replace(new RegExp('@计划完工', 'g'), dayjs(requestDate || new Date()).format(format))
+
     if (brandLogo) {
       this.imageData.set(brandLogo, true)
     }
@@ -1506,7 +1506,7 @@ export default {
           }
         } else {
           if (type) {
-            // saveAs(file, `${false || moment().format('YYYY-MM-DD-HH-mm-ss')}.pptx`)
+            // saveAs(file, `${false || dayjs().format('YYYY-MM-DD-HH-mm-ss')}.pptx`)
             saveAs(file, `${new Date().getTime()}.pptx`)
           } else {
             resolve(file)

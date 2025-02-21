@@ -98,7 +98,7 @@ export default () => {
   }
 
   // 关闭自动播放
-  const autoPlayTimer = ref(0)
+  const autoPlayTimer = ref<NodeJS.Timeout | number>(0)
   const closeAutoPlay = () => {
     if (autoPlayTimer.value) {
       clearInterval(autoPlayTimer.value)

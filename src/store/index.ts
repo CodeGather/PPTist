@@ -4,10 +4,14 @@ import { useSnapshotStore } from './snapshot'
 import { useKeyboardStore } from './keyboard'
 import { useScreenStore } from './screen'
 
+import { useOrderStore } from './order'
+
 export {
   useMainStore,
   useSlidesStore,
   useSnapshotStore,
   useKeyboardStore,
   useScreenStore,
+
+  useOrderStore,
 }

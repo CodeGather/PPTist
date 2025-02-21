@@ -36,7 +36,7 @@ withDefaults(defineProps<{
   }
 }
 .spin {
-  width: 200px;
+  width: 300px;
   height: 200px;
   position: fixed;
   top: 50%;

@@ -343,7 +343,7 @@ const toggleLoop = () => {
   loop.value = !loop.value
 }
 
-const autoHideControllerTimer = ref(-1)
+const autoHideControllerTimer = ref<NodeJS.Timeout | number>(-1)
 const hideController = ref(false)
 const autoHideController = () => {
   hideController.value = false

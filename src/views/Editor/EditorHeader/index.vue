@@ -60,6 +60,9 @@
       <div class="menu-item" v-tooltip="'导出'" @click="setDialogForExport('pptx')">
         <IconDownload class="icon" />
       </div>
+      <div class="menu-item" v-tooltip="'导出'" @click="hotkeyDrawerVisible = false; hotkeyDrawerOrderVisible = true">
+        <IconIndentLeft class="icon" />
+      </div>
     </div>
 
     <Drawer
@@ -69,6 +72,15 @@
     >
       <HotkeyDoc />
       <template v-slot:title>快捷操作</template>
+    </Drawer>
+
+    <Drawer
+      :width="400"
+      v-model:visible="hotkeyDrawerOrderVisible"
+      placement="right"
+    >
+      <OrderList />
+      <template v-slot:title>订单列表</template>
     </Drawer>
 
     <FullscreenSpin :loading="exporting" tip="正在导入..." />
@@ -85,6 +97,7 @@ import useSlideHandler from '@/hooks/useSlideHandler'
 import type { DialogForExportTypes } from '@/types/export'
 
 import HotkeyDoc from './HotkeyDoc.vue'
+import OrderList from './OrderList.vue'
 import FileInput from '@/components/FileInput.vue'
 import FullscreenSpin from '@/components/FullscreenSpin.vue'
 import Drawer from '@/components/Drawer.vue'
@@ -101,6 +114,7 @@ const { resetSlides } = useSlideHandler()
 
 const mainMenuVisible = ref(false)
 const hotkeyDrawerVisible = ref(false)
+const hotkeyDrawerOrderVisible = ref(false)
 const editingTitle = ref(false)
 const titleInputRef = ref<InstanceType<typeof Input>>()
 const titleValue = ref('')

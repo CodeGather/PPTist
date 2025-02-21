@@ -1,7 +1,22 @@
 import axios from 'axios'
 import message from '@/utils/message'
+import { useOrderStore } from '@/store'
 
 const instance = axios.create({ timeout: 1000 * 300 })
+
+instance.interceptors.request.use(config => {
+  const orderStore = useOrderStore()
+  const params:any = orderStore.getParams()
+  if (params.token) {
+    config.headers['token'] = params.token
+  }
+  // element ui Loading方法
+  // loadinginstace = Loading.service({ fullscreen: true })
+  return config
+}, error => {
+  // loadinginstace.close()
+  return Promise.reject(error)
+})
 
 instance.interceptors.response.use(
   response => {
